@@ -6,13 +6,18 @@ from player import Player
 player = Player()
 
 for t in range(48):
-    load = player.compute_load(t,{"departures" : [1,1,1,1],"arrivals": [0,0,0,0]})
+
     if t==12:
-        load = player.compute_load(t,{"departures" : [1,1,1,1],"arrivals": [0,0,0,0]})
+        data = {"departures" : [1,1,1,1],"arrivals": [0,0,0,0]}
     elif t==36:
-        load = player.compute_load(t,{"departures" : [0,0,0,0],"arrivals": [1,1,1,1]})
+        data = {"departures" : [0,0,0,0],"arrivals": [1,1,1,1]}
     else:
-        load = player.compute_load(t,{"departures" : [0,0,0,0],"arrivals": [0,0,0,0]})
+        data = {"departures" : [0,0,0,0],"arrivals": [0,0,0,0]}
+
+    player.compute_load(t, data)
+    prices = {"purchase" : 0.06,"sale" : 0.03}
+    imbalance = {"purchase_cover":0.02, "sale_cover": 0.02}
+    player.observe(t, data, prices, imbalance)
 
     soc = player.battery_stock
     assert soc['slow'][t][0] >= 0
