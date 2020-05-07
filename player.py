@@ -30,9 +30,19 @@ class Player:
         self.pmax_station = 40
         self.p_station = 0
 
+
+
     def take_decision(self, time):
         #Exemple : simple politics
-        load_battery = {"fast" : np.zeros(2),"slow" : np.zeros(2)}
+        load_battery = {"fast" : 20*np.zeros(2),"slow" : 5*np.zeros(2)}
+        if time>=0*2 and time<=3*2:
+            load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
+            #From 0 am to 6 am we charge as fast as we can
+        if time<=1.5*2 and time>=0*2:
+            load_battery = {"fast" : 10*np.ones(2),"slow" : 3*np.ones(2)}
+        if time>16*2:
+            load_battery = {"fast" : -17*np.ones(2),"slow" : -3*np.ones(2)}
+            #From 6 pm to 12pm we sell the stock we have
         #if time<6*2:
         #    load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
             #From 0 am to 6 am we charge as fast as we can
@@ -44,6 +54,8 @@ class Player:
         # Have to return load_battery to put in update_batterie_stock to get the load.
         # load_battery must be in the following format : {"fast" : [load_car_fast_1,load_car_fast_2],"slow" : [load_car_slow_1,load_car_slow_2]}
         return load_battery
+
+
 
     def update_battery_stock(self,time,load_battery):
 
