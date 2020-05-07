@@ -35,13 +35,20 @@ class Player:
     def take_decision(self, time):
         #Exemple : simple politics
         load_battery = {"fast" : 20*np.zeros(2),"slow" : 5*np.zeros(2)}
-        if time>=0*2 and time<=3*2:
+        #
+        if time >= 22*2 and time < 24*2 :
             load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
-            #From 0 am to 6 am we charge as fast as we can
-        if time<=1.5*2 and time>=0*2:
-            load_battery = {"fast" : 10*np.ones(2),"slow" : 3*np.ones(2)}
-        if time>16*2:
+        if time >= 0*2 and time <= 3*2:
+            load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
+        if time >= 3.5*2 and time <= 6*2:
+            load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
+
+        if time >= 16*2 and time <= 20*2 :
+            load_battery = {"fast" : 0*np.ones(2),"slow" : -3*np.ones(2)}
+        if time >=20*2 and time <=22*2 :
             load_battery = {"fast" : -17*np.ones(2),"slow" : -3*np.ones(2)}
+
+
             #From 6 pm to 12pm we sell the stock we have
         #if time<6*2:
         #    load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
