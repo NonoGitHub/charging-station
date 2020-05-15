@@ -43,7 +43,10 @@ class Player:
         if time >= 3.5*2 and time <= 6*2:
             load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
 
-        if time >= 16*2 and time <= 20*2 :
+
+        if time >= 6.5*2 and time <= 10*2:
+            load_battery = {"fast" : 0*np.ones(2),"slow" : -3*np.ones(2)}
+        if time >= 12*2 and time <= 20*2 :
             load_battery = {"fast" : 0*np.ones(2),"slow" : -3*np.ones(2)}
         if time >=20*2 and time <=22*2 :
             load_battery = {"fast" : -17*np.ones(2),"slow" : -3*np.ones(2)}
