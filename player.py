@@ -36,18 +36,14 @@ class Player:
         #Exemple : simple politics
         load_battery = {"fast" : np.zeros(2),"slow" : np.zeros(2)}
 
-        if time >= 16*2 and time < 21*2 :
+        if time >= 16*2 and time <= 21*2 :
             load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
-        if time >= 21*2 and time < 24*2:
-            load_battery = {"fast" : -4*np.ones(2),"slow" : -2*np.ones(2)}
-        if time >= 0*2 and time < 4*2:
-            load_battery = {"fast" : -4*np.ones(2),"slow" : -2*np.ones(2)}
-        if time >= 4*2 and time <= 7*2:
-            for i in range(2):
-                if self.battery_stock["slow"][time][i] <10:
-                    load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
-                if self.battery_stock["fast"][time][i] <10:
-                    load_battery = {"fast" : 17*np.ones(2),"slow" : 0*np.ones(2)}
+        if time > 21*2 and time < 24*2:
+            load_battery = {"fast" : -4*np.ones(2),"slow" : -1*np.ones(2)}
+        if time >= 0*2 and time <= 3*2:
+            load_battery = {"fast" : -4*np.ones(2),"slow" : -1*np.ones(2)}
+        if time >= 3*2 and time <= 7*2:
+            load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
         if time > 7*2 and time < 16*2:
             load_battery = {"fast" : 1*np.ones(2),"slow" : 1*np.ones(2)}
 
