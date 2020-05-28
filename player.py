@@ -38,7 +38,9 @@ class Player:
 
         if time >= 16*2 and time < 21*2 :
             load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
-        if time >= 21*2 and time <= 4*2:
+        if time >= 21*2 and time < 24*2:
+            load_battery = {"fast" : -4*np.ones(2),"slow" : -2*np.ones(2)}
+        if time >= 0*2 and time < 4*2:
             load_battery = {"fast" : -4*np.ones(2),"slow" : -2*np.ones(2)}
         if time >= 4*2 and time <= 7*2:
             for i in range(2):
