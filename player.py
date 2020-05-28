@@ -13,6 +13,8 @@ class Player:
         self.prices = {"purchase" : [],"sale" : []}
         self.efficiency = 0.95
         self.bill = np.zeros(self.horizon) # Where 5e penalities will be stocked
+        self.penalty=np.zeros(self.horizon)
+        self.grid_relative_load=np.zeros(self.horizon)
         self.load = np.zeros(self.horizon) # List l4
         self.load_battery_periode = {"fast" : np.zeros((self.horizon,2)),"slow" : np.zeros((self.horizon,2))} # How the player wants to charge/discharge the veicules
         self.battery_stock = {"slow" : np.zeros((self.horizon+1,2)), "fast" : np.zeros((self.horizon+1,2))} # State of the batteries
@@ -30,29 +32,23 @@ class Player:
         self.pmax_station = 40
         self.p_station = 0
 
-
-
     def take_decision(self, time):
         #Exemple : simple politics
-        load_battery = {"fast" : 20*np.zeros(2),"slow" : 5*np.zeros(2)}
-        #
-        if time >= 22*2 and time < 24*2 :
-            load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
-        if time >= 0*2 and time <= 3*2:
+        load_battery = {"fast" : np.zeros(2),"slow" : np.zeros(2)}
+
+        if time >= 16*2 and time < 21*2 :
             load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
-        if time >= 3.5*2 and time <= 6*2:
-            load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
+        if time >= 21*2 and time <= 4*2:
+            load_battery = {"fast" : -4*np.ones(2),"slow" : -2*np.ones(2)}
+        if time >= 4*2 and time <= 7*2:
+            for i in range(2):
+                if self.battery_stock["slow"][time][i] <10:
+                    load_battery = {"fast" : 0*np.ones(2),"slow" : 3*np.ones(2)}
+                if self.battery_stock["fast"][time][i] <10:
+                    load_battery = {"fast" : 17*np.ones(2),"slow" : 0*np.ones(2)}
+        if time > 7*2 and time < 16*2:
+            load_battery = {"fast" : 1*np.ones(2),"slow" : 1*np.ones(2)}
 
-
-        if time >= 6.5*2 and time <= 10*2:
-            load_battery = {"fast" : 0*np.ones(2),"slow" : -3*np.ones(2)}
-        if time >= 12*2 and time <= 20*2 :
-            load_battery = {"fast" : 0*np.ones(2),"slow" : -3*np.ones(2)}
-        if time >=20*2 and time <=22*2 :
-            load_battery = {"fast" : -17*np.ones(2),"slow" : -3*np.ones(2)}
-
-
-            #From 6 pm to 12pm we sell the stock we have
         #if time<6*2:
         #    load_battery = {"fast" : 17*np.ones(2),"slow" : 3*np.ones(2)}
             #From 0 am to 6 am we charge as fast as we can
@@ -64,8 +60,6 @@ class Player:
         # Have to return load_battery to put in update_batterie_stock to get the load.
         # load_battery must be in the following format : {"fast" : [load_car_fast_1,load_car_fast_2],"slow" : [load_car_slow_1,load_car_slow_2]}
         return load_battery
-
-
 
     def update_battery_stock(self,time,load_battery):
 
@@ -156,11 +150,13 @@ class Player:
         # Acctualise how many cars and which are at the station at t = time.
 
 
-    def penalty(self,time):
+    def compute_penalty(self,time):
         for speed in ["slow","fast"] :
             for i in range(2):
                 if time == self.depart[speed][i] and self.battery_stock[speed][time][i]/40 < 0.25:
                     self.bill[time]+=5
+                    self.penalty[time]+=5
+
         # If at the departure time of the veicule its battery isn't charged at least at 25% then you pay a 5e fine
 
     def compute_load(self,time,data):
@@ -180,11 +176,11 @@ class Player:
         load = self.update_battery_stock(time, load_battery)
         for i in range(2):
             self.load[time] += load["slow"][i] + load["fast"][i]
-        self.penalty(time)
+        self.compute_penalty(time)
         return self.load[time]
 
 
-    def observe(self, time, data, price, imbalance):
+    def observe(self, time, data, price, imbalance,grid_relative_load):
 
         self.prices["purchase"].append(price["purchase"])
         self.prices["sale"].append(price["sale"])
@@ -192,9 +188,12 @@ class Player:
         self.imbalance["purchase_cover"].append(imbalance["purchase_cover"])
         self.imbalance["sale_cover"].append(imbalance["sale_cover"])
 
+        self.grid_relative_load[time]=grid_relative_load
 
     def reset(self):
         self.bill = np.zeros(self.horizon)
+        self.penalty=np.zeros(self.horizon)
+        self.grid_relative_load=np.zeros(self.horizon)
         self.load = np.zeros(self.horizon)
         self.load_battery_periode = {"fast" : np.zeros((self.horizon,2)),"slow" : np.zeros((self.horizon,2))}
 
@@ -212,5 +211,3 @@ class Player:
         self.prices = {"purchase" : [],"sale" : []}
         self.imbalance={"purchase_cover":[], "sale_cover": []}
         self.p_station = 0
-
-
